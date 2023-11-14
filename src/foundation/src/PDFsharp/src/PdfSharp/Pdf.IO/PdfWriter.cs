@@ -8,6 +8,10 @@ using System.Text;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Security;
 using PdfSharp.Pdf.Internal;
+using PdfSharp.Internal;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Windows.Shapes;
 
 namespace PdfSharp.Pdf.IO
 {
@@ -436,18 +440,24 @@ namespace PdfSharp.Pdf.IO
                 if (bytes.Length != 0)
                 {
                     Write(bytes);
-                    if (_lastCat != CharCat.NewLine)
-                        WriteRaw('\n');
+                    
+                    // We just write the bytes regardless lastCat
+                    // otherwise no PDF/A compliance
+                    //Specification: ISO 19005-1:2005, 	
+                    //The value of the Length key specified in the stream dictionary shall match the number of bytes in the file
+                    //following the LINE FEED character after the stream keyword and preceding the EOL marker before the endstream keyword
+                    
+                    //if (_lastCat != CharCat.NewLine)
+                    //    WriteRaw('\n');
                 }
             }
-            WriteRaw("endstream\n");
+            // here always \nendstream\n
+            WriteRaw("\nendstream\n");
         }
-
         public void WriteRaw(string rawString)
         {
             if (String.IsNullOrEmpty(rawString))
                 return;
-
             byte[] bytes = PdfEncoders.RawEncoding.GetBytes(rawString);
             _stream.Write(bytes, 0, bytes.Length);
             _lastCat = GetCategory((char)bytes[bytes.Length - 1]);

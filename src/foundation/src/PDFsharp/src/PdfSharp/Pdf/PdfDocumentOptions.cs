@@ -81,5 +81,19 @@ namespace PdfSharp.Pdf
             set => _useFlateDecoderForJpegImages = value;
         }
         PdfUseFlateDecoderForJpegImages _useFlateDecoderForJpegImages = PdfUseFlateDecoderForJpegImages.Never;
+
+        public bool ManualXmpGeneration
+        {
+            get
+            {
+                return _manualXmpGeneration;
+            }
+            set
+            {
+                _manualXmpGeneration = value;
+            }
+        }
+        private Boolean _manualXmpGeneration;
+
     }
 }
